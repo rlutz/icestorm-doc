@@ -77,9 +77,182 @@ Standards}).
 @node Lattice iCE40 1K and 8K FPGAs
 @chapter Lattice iCE40 1K and 8K FPGAs
 
+This chapter describes the architecture of the Lattice iCE40 1K and 8K
+FPGAs. ...
+
 @menu
+* Wires::
+* Local tracks::
 * Figures::
 @end menu
+
+
+@node Wires
+@section Wires
+
+@cindex wires
+
+Wires are how an output of one tile is connected to an input of
+another tile.  There are four different kinds of wires:
+
+@itemize @bullet
+@item
+  @cindex carry
+  The @strong{carry output} of cell 7 of a logic tile is connected to
+  the carry input of cell 0 of the logic tile directly above.
+
+@item
+  @cindex neighbour connections
+  Each cell can access the eight outputs of its @strong{neighbouring
+  tiles} in all eight directions directly, except for I/O tiles which
+  aren't connected to other I/O tiles.
+
+  What an ``output'' is depends on the tile: For logic tiles, it is
+  the output of the eight logic cells.  For I/O tiles, outputs 0 to 3
+  are the @code{D_IN_0} and @code{D_IN_1} [XXX] for the @code{io_0}
+  and @code{io_1} [YYY], respectively, and outputs 4 to 7 are
+  identical to outputs 0 to 3.  For RAM tiles, [bottom: RDATA[7:0],
+  top: RDATA[15:8]].
+
+  @cindex PLL outputs: LOCK and SDO
+  As a special exception, the PLL outputs @code{LOCK} and @code{SDO}
+  are accessible via otherwise unused diagonal neighbour connections
+  of the corner logic tiles.  For the first PLL, @code{LOCK} is
+  connected to the bottom left neighbour connection 1 of the bottom
+  left logic tile, and @code{SDO} is connected to the bottom right
+  neighbour connection 3 of the bottom right logic tile.  For the
+  second PLL (only available on 4K), @code{LOCK} is connected to the
+  top left neighbour connection 1 of the top left logic tile, and
+  @code{SDO} is connected to the top right neighbour connection 1 of
+  the top right logic tile.
+
+  @c LOCK 1 1 neigh_op_bnl_1
+  @c SDO 12 1 neigh_op_bnr_3
+
+  @c LOCK 1 1 neigh_op_bnl_1
+  @c SDO 32 1 neigh_op_bnr_3
+  @c
+  @c LOCK 1 32 neigh_op_tnl_1
+  @c SDO 32 32 neigh_op_tnr_1
+
+@item
+  @cindex span wires
+  @strong{Span wires} connect tiles across a limited distance, usually
+  in a horizontal or vertical line.  There are five different kinds of
+  span wires:
+
+  @itemize @bullet
+  @item
+   @strong{Horizontal span-4 wires} connect up to 5 tiles in a row
+    (i.e., an output of one tile can be used as an input in another
+    tile which is up to 4 tiles to its left or right).  Two adjacent
+    tiles are connected by 4 groups of 12 wires each.
+
+    The top and bottom I/O banks have special ``peripheral'' span-4
+    wires instead of the normal ones (see below).
+
+    @c A horizontal span-4 wire is globally identified by its tile row,
+    @c the column of its right terminating tile (counting beyond actual
+    @c tiles), and the index of the wire inside the group.
+
+    @c Naming scheme (1K): @code{span4_y[1..16]_g[1..16]_[0..11]}
+
+  @item
+    @strong{Vertical span-4 wires} connect up to 9 tiles: 5 tiles in a
+    column and, with the exception of the bottom tile and possible I/O
+    tiles, each tile's left neighbour.  Two adjacent tiles are
+    connected by 4 groups of 12 wires each.
+
+    The left and right I/O banks have special ``peripheral'' span-4
+    wires instead of the normal ones (see below).
+
+    @c A vertical span-4 wire is globally identified by its (right) tile
+    @c column, the row of its top terminating tile (counting beyond
+    @c actual tiles), and the index of the wire inside the group.
+
+    @c Naming scheme (1K): @code{span4_x[1..12]_g[1..20]_[0..11]}
+
+  @item
+    @strong{Peripheral span-4 wires} connect I/O tiles along the
+    border of the fabric.  Two adjacent I/O tiles are connected by 4
+    groups of 4 wires each.
+
+    Along the edges, peripheral span-4 wires connect 5 tiles.  At the
+    bottom left and top right corner of the fabric, they are joined in
+    the way one would expect and still connect 5 tiles.
+
+    However, at the top left and bottom right corners, the groups'
+    order is reversed when passing the corner.  This means that the
+    four groups of span wires passing these corners actually connect
+    2, 4, 6, and 8 tiles, respectively.  The order of the signals
+    inside the groups is not changed.
+
+    @c Naming scheme (1K): TBD
+
+  @item
+    @strong{Horizontal span-12 wires} connect up to 13 tiles in a row.
+    Two adjacent tiles are connected by 12 groups of 2 wires each.
+    The top and bottom I/O banks don't have span-12 wires.
+
+    @c A horizontal span-12 wire is globally identified by its tile row,
+    @c the column of its right terminating tile (counting beyond actual
+    @c tiles), and the index of the wire inside the group.
+
+    @c Naming scheme (1K): @code{span12_y[1..16]_g[1..24]_[0..1]}
+
+  @item
+    @strong{Vertical span-12 wires} connect up to 13 tiles in a column.
+    Two adjacent tiles are connected by 12 groups of 2 wires each.
+    The left and right I/O banks don't have span-12 wires.
+
+    @c A vertical span-12 wire is globally identified by its tile
+    @c column, the row of its top terminating tile (counting beyond
+    @c actual tiles), and the index of the wire inside the group.
+
+    @c Naming scheme (1K): @code{span12_x[1..12]_g[1..28]_[0..1]}
+
+  @end itemize
+
+  Each time span wires pass from one non-I/O tile to another, they
+  are pairwise crossed out: even wires' numbers increase by one and
+  odd wires' numbers decrease by one.
+
+@item
+  @cindex global wires
+  @cindex fabout
+  There are eight @strong{global wires} which are connected to any
+  tile.  They can only be driven by certain I/O pins or by the special
+  @code{fabout} signal of certain I/O tiles.
+
+@end itemize
+
+
+@node Local tracks
+@section Local tracks
+
+@cindex local tracks
+
+Except for the direct carry connection of vertically neighbouring
+logic tiles [and global wire special effects], outputs are routed to a
+tile's inputs via @emph{local tracks}.
+
+The number of local tracks depends on the tile: logic, top RAM, and
+bottom RAM tiles have 32 local tracks (4 groups @@ 8 wires each) while
+I/O tiles have 16 local tracks (2 groups @@ 8 wires each).  The tile's
+own outputs, neighbouring tiles' outputs, and span wires can be
+connected to the local tracks, but only specific connections are
+allowed (see the @uref{http://www.clifford.at/icestorm/#docs, Bitstream Reference} for details).  The local tracks
+can then be connected to the tile's inputs.
+
+For global wires, an additional step is required: logic, top RAM, and
+bottom RAM tiles have 4 global-to-local nets (I/O tiles don't have
+global-to-local nets).  Each of these nets can be connected to any of
+the eight global nets and to one specific local track.
+
+
+@iftex
+@vfill  @c === WIP ===
+@end iftex
 
 @node Figures
 @section Figures
