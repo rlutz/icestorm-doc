@@ -46,7 +46,7 @@ Documentation License''.
 * Introduction::
 * Lattice iCE40 1K and 8K FPGAs::
 @c * Crash Course to Verilog::
-@c * Writing Designs for iCE40 FPGAs::
+* Writing Designs for iCE40 FPGAs::
 @c * The Build Process::
 @c * Using the IceStorm Tools on the Bitstream::
 @c * Programing the FPGA::
@@ -175,8 +175,67 @@ make things much easier.
 
 @c ============================================================================
 
-@c @node Writing Designs for iCE40 FPGAs
-@c @chapter Writing Designs for iCE40 FPGAs
+@node Writing Designs for iCE40 FPGAs
+@chapter Writing Designs for iCE40 FPGAs
+
+@menu
+* Pin mappings::
+@end menu
+
+@node Pin mappings
+@section Pin mappings
+
+@float Table,tbl:icestick-pins
+@multitable {I/O block} {199} {12.0000MHz clock} {out}
+@headitem I/O Block @tab Pin @tab Description @tab in/out
+@item 0 14 1 @tab 1 @tab DCDn @tab out
+@item 0 14 0 @tab 2 @tab DSRn @tab out
+@item 0 13 1 @tab 3 @tab DTRn @tab in
+@item 0 13 0 @tab 4 @tab CTSn @tab out
+@item 0 12 1 @tab 7 @tab RTSn @tab in
+@item 0 12 0 @tab 8 @tab RS232_Tx_TTL @tab out
+@item 0 11 1 @tab 9 @tab RS232_Rx_TTL @tab in
+@item 0 8 1 @tab 21 @tab 12.0000@dmn{MHz} clock @tab in
+@item 4 0 0 @tab 44 @tab J3 10 @tab
+@item 4 0 1 @tab 45 @tab J3 9 @tab
+@item 5 0 0 @tab 47 @tab J3 8 @tab
+@item 5 0 1 @tab 48 @tab J3 7 @tab
+@item 7 0 1 @tab 56 @tab J3 6 @tab
+@item 8 0 1 @tab 60 @tab J3 5 @tab
+@item 9 0 0 @tab 61 @tab J3 4 @tab
+@item 9 0 1 @tab 62 @tab J3 3 @tab
+@item 11 0 0 @tab 67 @tab SPI MOSI @tab
+@item 11 0 1 @tab 68 @tab SPI MISO @tab
+@item 12 0 0 @tab 70 @tab SPI SCK @tab
+@item 12 0 1 @tab 71 @tab SPI SS_B @tab
+@item 13 3 1 @tab 78 @tab Pmod 1 @tab
+@item 13 4 0 @tab 79 @tab Pmod 2 @tab
+@item 13 4 1 @tab 80 @tab Pmod 3 @tab
+@item 13 6 0 @tab 81 @tab Pmod 4 @tab
+@item 13 6 1 @tab 87 @tab Pmod 7 @tab
+@item 13 7 0 @tab 88 @tab Pmod 8 @tab
+@item 13 7 1 @tab 90 @tab Pmod 9 @tab
+@item 13 8 0 @tab 91 @tab Pmod 10 @tab
+@item 13 9 1 @tab 95 @tab D5 (green) @tab out
+@item 13 11 0 @tab 96 @tab D4 (red) @tab out
+@item 13 11 1 @tab 97 @tab D3 (red) @tab out
+@item 13 12 0 @tab 98 @tab D2 (red) @tab out
+@item 13 12 1 @tab 99 @tab D1 (red) @tab out
+@item 13 14 1 @tab 105 @tab IR TXD @tab
+@item 13 15 0 @tab 106 @tab IR RXD @tab
+@item 13 15 1 @tab 107 @tab IR SD @tab
+@item 12 17 1 @tab 112 @tab J1 3 @tab
+@item 12 17 0 @tab 113 @tab J1 4 @tab
+@item 11 17 1 @tab 114 @tab J1 5 @tab
+@item 11 17 0 @tab 115 @tab J1 6 @tab
+@item 10 17 1 @tab 116 @tab J1 7 @tab
+@item 10 17 0 @tab 117 @tab J1 8 @tab
+@item 9 17 1 @tab 118 @tab J1 9 @tab
+@item 9 17 0 @tab 119 @tab J1 10 @tab
+@end multitable
+@caption{Pin mapping for the Lattice iCEstick}
+@shortcaption{Pin mapping for the Lattice iCEstick}
+@end float
 
 @c ============================================================================
 
