@@ -1,0 +1,165 @@
+@pindex iceprog
+@cindex @code{iceprog} program, usage
+@example
+iceprog [-b|-n|-c] @var{input-file}
+iceprog -r|-R@var{bytes} @var{output-file}
+iceprog -S @var{input-file}
+iceprog -t
+@end example
+
+@noindent
+The @code{iceprog} program is a simple programming tool for FTDI-based
+Lattice iCE programmers which can read, write and erase the flash and
+write the SRAM of an FPGA.  It is typically invoked after the
+bitstream has been converted by @code{icepack} to the iCE40
+@code{.bin} format as the last step of the build process to transfer
+the bitstream to the FPGA.
+
+
+@subsection Operation mode
+
+When no special option is given, @code{iceprog} erases all
+@ifnothtml
+64@dmn{kB}
+@end ifnothtml
+@ifhtml
+64@U{202f}kB
+@end ifhtml
+sectors which would be touched by the written data, writes the data to
+the flash, and then reads it back and verifies it.
+
+@quotation Please note
+If the data is not aligned to
+@ifnothtml
+64@dmn{kB},
+@end ifnothtml
+@ifhtml
+64@U{202f}kB,
+@end ifhtml
+some data before (if @code{-o} is used) and after the written data may
+be erased as well.
+@end quotation
+
+The way the flash is erased can be changed with the following options:
+
+@table @samp
+@item -b
+Bulk erase the entire flash before writing.  When using this option,
+@code{iceprog} can be invoked without an @var{input-file}; in this
+case, the flash is just bulk erased, and nothing is written.
+
+@item -n
+Don't erase the flash before writing.
+
+@end table
+
+Instead of the default erase/write/verify, @code{iceprog} can perform
+some other operations:
+
+@table @samp
+@item -c
+Just read the data which would have been written from the flash and
+verify it (``check'').
+
+@item -r
+Read the first
+@ifnothtml
+256@dmn{kB}
+@end ifnothtml
+@ifhtml
+256@U{202f}kB
+@end ifhtml
+from flash and write them to a file.
+
+@item -R @var{size-in-bytes}
+Read the specified number of bytes from the flash and write them to a
+file.  You can append @code{k} to the size to specify it in kilobytes
+and @code{M} to specify it in megabytes.
+
+@item -S
+Perform SRAM programming.
+
+@item -t
+Just read the flash ID sequence.
+
+@end table
+
+All of the above options are mutually exclusive.
+
+
+@subsection General options
+
+@table @samp
+@item -d @var{device-string}
+Use the specified USB device instead of the default one (which is
+vendor ID @code{0x0403} and device ID @code{0x6010}).  The supported
+notations for @var{device-string} are:
+
+@table @samp
+@item d:@var{devicenode}
+Path of the bus and device node within USB device tree (usually at
+@code{/proc/bus/usb/}).  Example: @samp{d:002/005}.
+
+@item i:@var{vendor}:@var{product}
+First device with given vendor and product ID.  IDs can be decimal,
+octal (preceded by @samp{0}), or hex (preceded by @samp{0x}).
+Example: @samp{i:0x0403:0x6010}.
+
+@item i:@var{vendor}:@var{product}:@var{index}
+Same as above, with index being the number of the device (starting
+with 0) if there is more than one device with this vendor and product
+ID.  Example: @samp{i:0x0403:0x6010:0}.
+
+@item s:@var{vendor}:@var{product}:@var{serial-string}
+First device with given vendor ID, product ID and serial string.
+
+@end table
+
+@item -I A|B|C|D
+Connect to the specified interface on the FTDI chip.  If this option
+is omitted, interface A is used.
+
+@item -o @var{offset-in-bytes}
+Start reading/writing at address @var{offset-in-bytes} instead of the
+beginning of the memory.  You can append @code{k} to the offset to
+specify it in kilobytes and @code{M} to specify it in megabytes.
+
+@item -v
+Write more verbose messages.
+
+@item --help
+Display a help text and exit.
+
+@end table
+
+
+@subsection Exit status
+
+@table @code
+@item 0
+Success.
+@item 1
+A non-hardware error occurred (e.g., failure to read from or write
+to a file, or invoked with invalid options).
+@item 2
+Communication with the hardware failed (e.g., cannot find the iCE
+FTDI USB device).
+@item 3
+Verification of the data failed.
+@end table
+
+
+@subsection Notes for specific boards
+
+@subsubsection Notes for the iCEstick (iCE40HX-1k development board)
+
+An unmodified iCEstick can only be programmed via the serial flash.
+Direct programming of the SRAM is not supported.  For direct SRAM
+programming, the flash chip and one zero ohm resistor must be
+desoldered, and the FT2232H SI pin must be connected to the iCE SPI_SI
+pin as shown @uref{http://www.clifford.at/gallery/2014-elektronik/IMG_20141115_183838, in this picture}.
+
+@subsubsection Notes for the iCE40-HX8K Breakout Board
+
+Make sure that the jumper settings on the board match the selected
+mode (SRAM or FLASH).  See the iCE40-HX8K user manual for details.
