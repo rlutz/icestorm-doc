@@ -1,0 +1,80 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\input{tiles-common}
+\begin{document}
+\begin{tikzpicture}[x=1.1cm, y=1.1cm]
+
+  \foreach \x in {1,...,6}
+    \foreach \y in {1,...,8}
+      \logictile{\x}{\y};
+
+  \foreach \x in {1,...,6}
+    \foreach \y in {0,9}
+      \iotile{\x}{\y};
+
+  \foreach \x in {0,7}
+    \foreach \y in {1,...,8}
+      \iotile{\x}{\y};
+
+  \leftpin{0}{1}{0}{}{unused};
+  \leftpin{0}{1}{1}{}{unused};
+  \leftpin{0}{2}{0}{}{unused};
+  \leftpin{0}{2}{1}{}{unused};
+  %\leftpin{0}{3}{0}{}{missing};
+  %\leftpin{0}{3}{1}{}{missing};
+  \leftpin{0}{4}{0}{7}{};
+  \leftpin{0}{4}{1}{8}{};
+  \leftpin{0}{5}{0}{6}{};
+  \leftpin{0}{5}{1}{5}{};
+  \leftpin{0}{6}{0}{}{unused};
+  \leftpin{0}{6}{1}{}{unused};
+  \leftpin{0}{7}{0}{1}{};
+  \leftpin{0}{7}{1}{2}{};
+  %\leftpin{0}{8}{0}{}{missing};
+  %\leftpin{0}{8}{1}{}{missing};
+
+  %\toppin{1}{9}{0}{}{missing};
+  %\toppin{1}{9}{1}{}{missing};
+  \toppin{2}{9}{0}{31}{};
+  \toppin{2}{9}{1}{32}{};
+  \toppin{3}{9}{0}{}{unused};
+  \toppin{3}{9}{1}{30}{};
+  \toppin{4}{9}{0}{29}{};
+  \toppin{4}{9}{1}{}{unused};
+  \toppin{5}{9}{0}{27}{};
+  \toppin{5}{9}{1}{}{unused};
+  \toppin{6}{9}{0}{26}{};
+  \toppin{6}{9}{1}{}{unused};
+
+  %\rightpin{7}{1}{0}{}{missing};
+  %\rightpin{7}{1}{1}{}{missing};
+  %\rightpin{7}{2}{0}{}{missing};
+  %\rightpin{7}{2}{1}{}{missing};
+  %\rightpin{7}{3}{0}{}{missing};
+  \rightpin{7}{3}{1}{}{unused};
+  \rightpin{7}{4}{0}{18}{};
+  \rightpin{7}{4}{1}{19}{};
+  \rightpin{7}{5}{0}{20}{};
+  \rightpin{7}{5}{1}{}{unused};
+  \rightpin{7}{6}{0}{22}{};
+  \rightpin{7}{6}{1}{23}{};
+  %\rightpin{7}{7}{0}{}{missing};
+  %\rightpin{7}{7}{1}{}{missing};
+  %\rightpin{7}{8}{0}{}{missing};
+  %\rightpin{7}{8}{1}{}{missing};
+
+  %\bottompin{1}{0}{0}{}{missing};
+  %\bottompin{1}{0}{1}{}{missing};
+  %\bottompin{2}{0}{0}{}{missing};
+  %\bottompin{2}{0}{1}{}{missing};
+  \bottompin{3}{0}{0}{}{unused};
+  \bottompin{3}{0}{1}{}{unused};
+  \bottompin{4}{0}{0}{}{unused};
+  \bottompin{4}{0}{1}{}{unused};
+  \bottompin{5}{0}{0}{12}{};
+  \bottompin{5}{0}{1}{13}{};
+  \bottompin{6}{0}{0}{15}{};
+  \bottompin{6}{0}{1}{14}{};
+
+\end{tikzpicture}
+\end{document}

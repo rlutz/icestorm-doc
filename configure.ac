@@ -8,5 +8,5 @@ AC_CONFIG_SRCDIR([icestorm.texi])
 
 AM_INIT_AUTOMAKE([foreign silent-rules subdir-objects])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile graphics/Makefile])
 AC_OUTPUT

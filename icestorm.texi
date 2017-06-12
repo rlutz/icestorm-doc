@@ -44,7 +44,7 @@ Documentation License''.
 
 @menu
 * Introduction::
-@c * Lattice iCE40 1K and 8K FPGAs::
+* Lattice iCE40 1K and 8K FPGAs::
 @c * Crash Course to Verilog::
 @c * Writing Designs for iCE40 FPGAs::
 @c * The Build Process::
@@ -74,8 +74,58 @@ Standards}).
 
 @c ============================================================================
 
-@c @node Lattice iCE40 1K and 8K FPGAs
-@c @chapter Lattice iCE40 1K and 8K FPGAs
+@node Lattice iCE40 1K and 8K FPGAs
+@chapter Lattice iCE40 1K and 8K FPGAs
+
+@menu
+* Figures::
+@end menu
+
+@node Figures
+@section Figures
+
+@float Figure,fig:tiles386
+@image{graphics/tiles-386,6in,,Tiles in the iCE40 HX386}
+@caption{Tile fabric for the iCE40 LP384 FPGA.
+Pins on the left or bottom of an I/O tile are connected to I/O block 0
+and pins on the right or top to I/O block 1.
+Pin numbers correspond to the 32-pin QFN package; pins shown in
+grey aren't connected in this package but are in other packages.}
+@c The main grid of 6x8 logic tiles is surrounded by four banks of I/O
+@c tiles; there are no RAM tiles in this FPGA.
+@shortcaption{Tiles in the iCE40 LP386}
+@end float
+
+@float Figure,fig:tiles1k
+@image{graphics/tiles-1k,6in,,Tiles in the iCE40 HX1K}
+@caption{Tile fabric for the iCE40 xx1K FPGA.
+Pins on the left or bottom of an I/O tile are connected to I/O block 0
+and pins on the right or top to I/O block 1.
+Pin numbers correspond to the 144-pin TQFP package; the pin shown
+in grey isn't connected in this package but is in other packages.}
+@c The main grid of 12x16 logic and RAM tiles is surrounded by four
+@c banks of I/O tiles.
+@c The PLL PORTA clock is fed directly into the input path of I/O
+@c block 6 0 1 (pin 49) and the PORTB clock is fed into the input path
+@c of I/O block 7 0 0 (pin 50).
+@shortcaption{Tiles in the iCE40 HX1K}
+@end float
+
+@float Figure,fig:tiles8k
+@image{graphics/tiles-8k,6in,,Tiles in the iCE40 HX8K}
+@caption{Tile fabric for the iCE40 xx4K and xx8K FPGA.
+Pins on the left or bottom of an I/O tile are connected to I/O block 0
+and pins on the right or top to I/O block 1.
+Pin numbers correspond to the 144-pin TQFP package; pins shown in
+grey aren't connected in this package but are in other packages.}
+@c The main grid of 32x32 logic and RAM tiles is surrounded by four
+@c banks of I/O tiles.
+@shortcaption{Tiles in the iCE40 HX8K}
+@end float
+
+I suggest you spend a few minutes meditating over these pictures.
+This is the map of what you are working with; knowing it well will
+make things much easier.
 
 @c ============================================================================
 

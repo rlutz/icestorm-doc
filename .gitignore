@@ -28,3 +28,6 @@ Makefile
 /icestorm.ps
 /icestorm.t2d/
 /icestorm.t2p/
+/graphics/*.eps
+/graphics/*.jpg
+/graphics/*.pdf

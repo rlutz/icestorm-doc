@@ -1,0 +1,147 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\input{tiles-common}
+\begin{document}
+\begin{tikzpicture}[x=1.1cm, y=1.1cm]
+
+  \foreach \x in {1,2,4,5,...,9,11,12}
+    \foreach \y in {1,...,16}
+      \logictile{\x}{\y};
+
+  \foreach \x in {3,10} {
+    \ramtile{\x}{1}{2};
+    \ramtile{\x}{3}{4};
+    \ramtile{\x}{5}{6};
+    \ramtile{\x}{7}{8};
+    \ramtile{\x}{9}{10};
+    \ramtile{\x}{11}{12};
+    \ramtile{\x}{13}{14};
+    \ramtile{\x}{15}{16};
+  }
+
+  \foreach \x in {1,...,12}
+    \foreach \y in {0,17}
+      \iotile{\x}{\y};
+
+  \foreach \x in {0,13}
+    \foreach \y in {1,...,16}
+      \iotile{\x}{\y};
+
+  %\leftpin{0}{ 1}{0}{}{missing};
+  %\leftpin{0}{ 1}{1}{}{missing};
+  \leftpin{0}{ 2}{0}{34}{};
+  \leftpin{0}{ 2}{1}{33}{};
+  \leftpin{0}{ 3}{0}{32}{};
+  \leftpin{0}{ 3}{1}{31}{};
+  \leftpin{0}{ 4}{0}{29}{};
+  \leftpin{0}{ 4}{1}{28}{};
+  \leftpin{0}{ 5}{0}{26}{};
+  \leftpin{0}{ 5}{1}{25}{};
+  \leftpin{0}{ 6}{0}{24}{};
+  \leftpin{0}{ 6}{1}{23}{};
+  %\leftpin{0}{ 7}{0}{}{missing};
+  %\leftpin{0}{ 7}{1}{}{missing};
+  \leftpin{0}{ 8}{0}{22}{};
+  \leftpin{0}{ 8}{1}{21}{};
+  \leftpin{0}{ 9}{0}{20}{};
+  \leftpin{0}{ 9}{1}{19}{};
+  \leftpin{0}{10}{0}{12}{};
+  \leftpin{0}{10}{1}{11}{};
+  \leftpin{0}{11}{0}{10}{};
+  \leftpin{0}{11}{1}{9}{};
+  \leftpin{0}{12}{0}{8}{};
+  \leftpin{0}{12}{1}{7}{};
+  \leftpin{0}{13}{0}{4}{};
+  \leftpin{0}{13}{1}{3}{};
+  \leftpin{0}{14}{0}{2}{};
+  \leftpin{0}{14}{1}{1}{};
+  %\leftpin{0}{15}{0}{}{missing};
+  %\leftpin{0}{15}{1}{}{missing};
+  %\leftpin{0}{16}{0}{}{missing};
+  %\leftpin{0}{16}{1}{}{missing};
+
+  \toppin{1}{17}{0}{144}{};
+  \toppin{1}{17}{1}{143}{};
+  \toppin{2}{17}{0}{142}{};
+  \toppin{2}{17}{1}{141}{};
+  \toppin{3}{17}{0}{139}{};
+  \toppin{3}{17}{1}{138}{};
+  \toppin{4}{17}{0}{137}{};
+  \toppin{4}{17}{1}{136}{};
+  \toppin{5}{17}{0}{135}{};
+  \toppin{5}{17}{1}{134}{};
+  \toppin{6}{17}{0}{}{unused};
+  \toppin{6}{17}{1}{129}{};
+  \toppin{7}{17}{0}{128}{};
+  \toppin{7}{17}{1}{122}{};
+  \toppin{8}{17}{0}{121}{};
+  \toppin{8}{17}{1}{120}{};
+  \toppin{9}{17}{0}{119}{};
+  \toppin{9}{17}{1}{118}{};
+  \toppin{10}{17}{0}{117}{};
+  \toppin{10}{17}{1}{116}{};
+  \toppin{11}{17}{0}{115}{};
+  \toppin{11}{17}{1}{114}{};
+  \toppin{12}{17}{0}{113}{};
+  \toppin{12}{17}{1}{112}{};
+
+  \rightpin{13}{ 1}{0}{73}{};
+  \rightpin{13}{ 1}{1}{74}{};
+  \rightpin{13}{ 2}{0}{75}{};
+  \rightpin{13}{ 2}{1}{76}{};
+  %\rightpin{13}{ 3}{0}{}{missing};
+  \rightpin{13}{ 3}{1}{78}{};
+  \rightpin{13}{ 4}{0}{79}{};
+  \rightpin{13}{ 4}{1}{80}{};
+  %\rightpin{13}{ 5}{0}{}{missing};
+  %\rightpin{13}{ 5}{1}{}{missing};
+  \rightpin{13}{ 6}{0}{81}{};
+  \rightpin{13}{ 6}{1}{87}{};
+  \rightpin{13}{ 7}{0}{88}{};
+  \rightpin{13}{ 7}{1}{90}{};
+  \rightpin{13}{ 8}{0}{91}{};
+  \rightpin{13}{ 8}{1}{93}{};
+  \rightpin{13}{ 9}{0}{94}{};
+  \rightpin{13}{ 9}{1}{95}{};
+  %\rightpin{13}{10}{0}{}{missing};
+  %\rightpin{13}{10}{1}{}{missing};
+  \rightpin{13}{11}{0}{96}{};
+  \rightpin{13}{11}{1}{97}{};
+  \rightpin{13}{12}{0}{98}{};
+  \rightpin{13}{12}{1}{99}{};
+  \rightpin{13}{13}{0}{101}{};
+  \rightpin{13}{13}{1}{102}{};
+  \rightpin{13}{14}{0}{104}{};
+  \rightpin{13}{14}{1}{105}{};
+  \rightpin{13}{15}{0}{106}{};
+  \rightpin{13}{15}{1}{107}{};
+  %\rightpin{13}{16}{0}{}{missing};
+  %\rightpin{13}{16}{1}{}{missing};
+
+  \bottompin{1}{0}{0}{37}{};
+  \bottompin{1}{0}{1}{38}{};
+  \bottompin{2}{0}{0}{39}{};
+  \bottompin{2}{0}{1}{41}{};
+  \bottompin{3}{0}{0}{42}{};
+  \bottompin{3}{0}{1}{43}{};
+  \bottompin{4}{0}{0}{44}{};
+  \bottompin{4}{0}{1}{45}{};
+  \bottompin{5}{0}{0}{47}{};
+  \bottompin{5}{0}{1}{48}{};
+  \bottompin{6}{0}{0}{52}{};
+  \bottompin{6}{0}{1}{49}{};  % PLL port A
+  \bottompin{7}{0}{0}{50}{};  % PLL port B
+  \bottompin{7}{0}{1}{56}{};
+  \bottompin{8}{0}{0}{58}{};
+  \bottompin{8}{0}{1}{60}{};
+  \bottompin{9}{0}{0}{61}{};
+  \bottompin{9}{0}{1}{62}{};
+  \bottompin{10}{0}{0}{63}{};
+  \bottompin{10}{0}{1}{64}{};
+  \bottompin{11}{0}{0}{67}{};
+  \bottompin{11}{0}{1}{68}{};
+  \bottompin{12}{0}{0}{70}{};
+  \bottompin{12}{0}{1}{71}{};
+
+\end{tikzpicture}
+\end{document}
