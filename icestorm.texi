@@ -7,6 +7,10 @@
 @c %**end of header
 
 @copying
+@strong{This manual is work-in-progress.  You can find the official
+IceStorm documentation @uref{http://www.clifford.at/icestorm/#docs,
+here}.}
+
 Copyright @copyright{} 2017 Roland Lutz
 
 @quotation
