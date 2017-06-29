@@ -367,6 +367,7 @@ make things much easier.
 
 @menu
 * Pin mappings::
+* USB communication::
 @end menu
 
 @node Pin mappings
@@ -425,6 +426,62 @@ make things much easier.
 @caption{Pin mapping for the Lattice iCEstick}
 @shortcaption{Pin mapping for the Lattice iCEstick}
 @end float
+
+@node USB communication
+@section USB communication
+
+Un unmodified iCEstick has the following EEPROM configuration:
+
+@example
+0001 0403 6010 0700 fa80 0000 1111 109a
+3caa 0000 0000 0000 0056 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0310 004c 0061
+0074 0074 0069 0063 0065 033c 004c 0061
+0074 0074 0069 0063 0065 0020 0046 0054
+0055 0053 0042 0020 0049 006e 0074 0065
+0072 0066 0061 0063 0065 0020 0043 0061
+0062 006c 0065 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 165b
+@end example
+
+This translates to the following configuration parameters:
+
+@example
+Channel A: FIFO (not a virtual COM port)
+Channel B: UART (not a virtual COM port, don't suspend on DBUS7 low)
+
+Vendor ID: 0403
+Product ID: 6010
+Release number: 0700
+
+Power source: bus powered
+Remote wakeup: disabled
+
+Max power consumption: 500mA
+
+In endpoint isn't isochronous
+Out endpoint isn't isochronous
+Don't pull down I/O pins during USB suspend mode
+Don't use serial number string
+
+Group AL drive: 8mA (no slow slew, no schmitt input)
+Group AH drive: 8mA (no slow slew, no schmitt input)
+Group BL drive: 8mA (no slow slew, no schmitt input)
+Group BH drive: 8mA (no slow slew, no schmitt input)
+
+Attached EEPROM: 93x56 (actually, it's a 93LC56)
+
+Manufacturer: "Lattice"
+Product: "Lattice FTUSB Interface Cable"
+No serial string
+@end example
 
 @c ============================================================================
 
