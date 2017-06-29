@@ -72,6 +72,20 @@ working with it.  It follows the guidelines for GNU documentation
 (@pxref{Documentation,, Documenting Programs, standards, GNU Coding
 Standards}).
 
+There's some important documentation which can't be included here for
+copyright reasons:
+
+@itemize @bullet
+@item @uref{http://www.latticesemi.com/~/media/LatticeSemi/Documents/DataSheets/iCE/iCE40LPHXFamilyDataSheet.pdf, Lattice iCE40 LP/HX Family Data Sheet}
+@item @uref{http://www.latticesemi.com/~/media/LatticeSemi/Documents/TechnicalBriefs/SBTICETechnologyLibrary201504.pdf, Lattice iCE Technology Library}
+@item @uref{http://www.latticesemi.com/~/media/LatticeSemi/Documents/ApplicationNotes/IK/iCE40ProgrammingandConfiguration.pdf, iCE40 Programming and Configuration}
+@item @uref{http://www.latticesemi.com/~/media/LatticeSemi/Documents/UserManuals/EI/icestickusermanual.pdf, iCEstick Evaluation Kit User's Guide}
+@item @uref{http://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT2232H.pdf, FT2232H Datasheet}
+@item @uref{http://www.ftdichip.com/Support/Documents/AppNotes/AN_135_MPSSE_Basics.pdf, FTDI MPSSE Basics}
+@item @uref{http://www.ftdichip.com/Support/Documents/AppNotes/AN_108_Command_Processor_for_MPSSE_and_MCU_Host_Bus_Emulation_Modes.pdf, Command Processor for MPSSE and MCU Host Bus Emulation Modes}
+@item @uref{http://www.ftdichip.com/Support/Documents/AppNotes/AN2232C-01_MPSSE_Cmnd.pdf, AN2232C-01 Command Processor for MPSSE and MCU Host Bus Emulation Modes}
+@end itemize
+
 @c ============================================================================
 
 @node Lattice iCE40 1K and 8K FPGAs
