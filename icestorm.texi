@@ -359,15 +359,17 @@ make things much easier.
 @section Pin mappings
 
 @float Table,tbl:icestick-pins
-@multitable {I/O block} {199} {12.0000MHz clock} {out}
-@headitem I/O Block @tab Pin @tab Description @tab in/out
+@multitable {I/O Block} {199} {12.0000MHz clock} {out} {(actually, it's not RS232 but UART)}
+@headitem I/O Block @tab Pin @tab Description @tab in/out @tab
 @item 0 14 1 @tab 1 @tab DCDn @tab out
 @item 0 14 0 @tab 2 @tab DSRn @tab out
 @item 0 13 1 @tab 3 @tab DTRn @tab in
 @item 0 13 0 @tab 4 @tab CTSn @tab out
 @item 0 12 1 @tab 7 @tab RTSn @tab in
 @item 0 12 0 @tab 8 @tab RS232_Tx_TTL @tab out
+  @tab (actually, it's not RS232 but UART)
 @item 0 11 1 @tab 9 @tab RS232_Rx_TTL @tab in
+  @tab (actually, it's not RS232 but UART)
 @item 0 8 1 @tab 21 @tab 12.0000@dmn{MHz} clock @tab in
 @item 4 0 0 @tab 44 @tab J3 10 @tab
 @item 4 0 1 @tab 45 @tab J3 9 @tab
