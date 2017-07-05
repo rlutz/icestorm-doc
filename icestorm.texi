@@ -513,8 +513,72 @@ make things much easier.
 @chapter Programing the FPGA
 
 @menu
+* Configuration process:: How the configuration is loaded to the SRAM.
 * iceprog Invocation:: Invoking the @code{iceprog} Program
 @end menu
+
+@node Configuration process
+@section How the configuration is loaded
+
+The configuration of the FPGA is stored in an internal SRAM.  Since
+the SRAM contents are lost when the FPGA isn't powered, the
+configuration has to be loaded onto the FPGA when it is powered up.
+There are three different ways how this can be achieved:
+
+@itemize @bullet
+@item
+  The configuration can be stored in an @strong{external flash}.
+  On power-up or after a reset, the FPGA loads the configuration
+  automatically from the flash, acting as an SPI master.
+  A connection to a computer or external microprocessor is only
+  necessary when the contents of the flash should be updated.
+  (The iCEstick works this way.)
+
+@item
+  The configuration can be @strong{written to the SRAM} of the FPGA
+  acting as an SPI slave by a computer or an external microprocessor
+  after each power-up or reset.  (This is possible on the iCEstick but
+  requires a hardware modification; see TODO:fig.)
+
+@item
+  The configuration can be stored in the FPGA's internal
+  @strong{non-volatile configuration memory}.  This allows the FPGA to
+  configure itself instantly without the need for external hardware,
+  mimicking the behavior of an ASIC; but the NVCM is only programmable
+  once, and documentation on this is somewhat scarce.  When
+  programming the NVCM, the configuration is written to the FPGA
+  acting as an SPI slave using an interface similar to a 25-series SPI
+  flash (which, in addition to normal SPI slave configuration, also
+  uses the @code{SPI_SO} pin).  Alternatively, fast production NVCM
+  programming via the @code{VPP_FAST} pin can be used.  Using the NVCM
+  is mainly useful for mass-produced hardware or, since read access to
+  the NVCM can be disabled, for obscuring the configuration from the
+  user.
+
+@end itemize
+
+Which of these configuration modes is used is determined by the value
+of the @code{SPI_SS_B} pin at the moment when the @code{CRESET_B} pin
+returns high.  If @code{SPI_SS_B} is low, the FPGA waits to be
+configured by an external device.  If @code{SPI_SS_B} is high, the
+FPGA configures itself from the external flash (or the internal NVCM,
+if enabled); in this case, the @code{SPI_SS_B} pin doubles as the
+slave select output for reading the flash.
+
+
+When loading the configuration, the SRAM starts out as all zeroes
+which are gradually replaced with the incoming data.  @emph{The
+configuration bits immediately take effect as they are loaded.}
+During the configuration, the I/O pins are held in tristate mode; this
+is released afterwards.  The four SPI pins used for configuration
+(@code{SPI_SO}, @code{SPI_SI}, @code{SPI_SS_B} and @code{SPI_SCK}) are
+released 49 clock cycles later.
+
+
+[CRESET]
+
+[CDONE -- Once the configuration is finished, the CDONE pin is set to high.]
+
 
 @node iceprog Invocation
 @section Invoking the @code{iceprog} Program
