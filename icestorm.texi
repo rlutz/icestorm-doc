@@ -50,7 +50,7 @@ Documentation License''.
 @c * The Build Process::
 @c * Using the IceStorm Tools on the Bitstream::
 * Programing the FPGA::
-@c * Communicating with the FPGA::
+* Communicating with the FPGA::
 * GNU Free Documentation License:: Copying this manual.
 * Index:: Complete index
 @end menu
@@ -589,8 +589,255 @@ released 49 clock cycles later.
 
 @c ============================================================================
 
-@c @node Communicating with the FPGA
-@c @chapter Communicating with the FPGA
+@node Communicating with the FPGA
+@chapter Communicating with the FPGA
+
+The FTDI IC on the iCEstick which handles USB communication with the
+computer provides two communication channels: channel A is used to
+program the configuration onto the flash via SPI while channel B is
+directly connected to the FPGA and can be used for arbitrary
+communication.  (If the hardware has been modified for direct SRAM
+programming, channel A is available for communication via SPI as
+well.)
+
+By default, channel B is configured as an @acronym{UART, universal
+asynchronous receiver/transmitter} port, i.e., a serial terminal.  To
+wires named Tx (transmit, FPGA@arrow{}PC) and Rx (receive,
+PC@arrow{}FPGA) are used to transmit data serially (i.e., one bit
+after another) in packages of 7 or 8 bits.  In addition, there are
+five ``modem control lines'' which can be used as generic I/O pins
+(@pxref{tbl:uart-mcl}).
+
+
+@float Table,tbl:uart-mcl
+@multitable {I/O Block} {TQFP Pin} {transmit (FPGA) / receive (PC)} {FPGA@arrow{}PC} {@code{TIOCM_CAR} / @code{TIOCM_CD}} {0x000}
+@headitem I/O Block @tab TQFP Pin @tab Name  @tab Direction      @tab @code{ioctl} Bit   @tab Value
+
+@item 0 11 1 @tab 9   @tab receive (FPGA) / transmit (PC) @tab PC@arrow{}FPGA @tab ---                                @tab ---
+@item 0 12 0 @tab 8   @tab transmit (FPGA) / receive (PC) @tab FPGA@arrow{}PC @tab ---                                @tab ---
+
+@item ---    @tab --- @tab line enable         @tab ---            @tab @code{TIOCM_LE}                    @tab 0x001
+@item 0 13 1 @tab 3   @tab data terminal ready @tab PC@arrow{}FPGA @tab @code{TIOCM_DTR}                   @tab 0x002
+@item 0 12 1 @tab 7   @tab request to send     @tab PC@arrow{}FPGA @tab @code{TIOCM_RTS}                   @tab 0x004
+@item ---    @tab --- @tab secondary transmit  @tab ---            @tab @code{TIOCM_ST}                    @tab 0x008
+@item ---    @tab --- @tab secondary receive   @tab ---            @tab @code{TIOCM_SR}                    @tab 0x010
+@item 0 13 0 @tab 4   @tab clear to send       @tab FPGA@arrow{}PC @tab @code{TIOCM_CTS}                   @tab 0x020
+@item 0 14 1 @tab 1   @tab data carrier detect @tab FPGA@arrow{}PC @tab @code{TIOCM_CAR} / @code{TIOCM_CD} @tab 0x040
+@item ---    @tab --- @tab ring indicator      @tab FPGA@arrow{}PC @tab @code{TIOCM_RNG} / @code{TIOCM_RI} @tab 0x080
+@item 0 14 0 @tab 2   @tab data set ready      @tab FPGA@arrow{}PC @tab @code{TIOCM_DSR}                   @tab 0x100
+@end multitable
+@caption{UART and modem control lines}
+@shortcaption{UART and modem control lines}
+@end float
+
+
+@menu
+* Using the modem control lines as GPIO::
+* Communication with the FPGA via UART::
+* Using the FTDI IC in FIFO mode::
+@end menu
+
+@node Using the modem control lines as GPIO
+@section Using the modem control lines as GPIO
+
+The easiest way to comminicate with the FPGA is to use the ``modem
+control lines'' DTR, RTS, CTS, (D)CD and DSR as general purpose I/O
+pins.  You can totally disregard their historic meaning and just use
+them to communicate an arbitrary status from the computer to the FPGA
+(DTR, RTS) or from the FPGA to the computer (CTS, CD, DSR).
+
+@subsection Accessing the modem control lines from the FPGA
+
+The modem control lines are connected to pins 1--4 and 7 of the FPGA
+as shown in @ref{tbl:uart-mcl}.  In order to be able to use them, you
+have to add them to the @code{.pcf} file:
+
+@example
+set_io DCD 1  # out
+set_io DSR 2  # out
+set_io DTR 3  # in
+set_io CTS 4  # out
+set_io RTS 7  # in
+@end example
+
+You can assign whatever name you want to them here; all that matters
+to the FPGA is which pins it should input from or output to.  Just
+make sure not to confuse an input for an output as you may damage the
+board.
+
+Now, you can add them to the top module declaration using your
+assigned names just like any I/O pin.  Here's an example design with a
+binary counter which is shown on the middle three LEDs as well as
+signalled on the three output lines.  The state of the two input lines
+is displayed on the two outer LEDs:
+
+@example
+@verbatim
+`default_nettype none
+
+module top(
+	input clk,
+
+	output DCD,
+	output DSR,
+	input DTR,
+	output CTS,
+	input RTS,
+
+	output LED0,
+	output LED1,
+	output LED2,
+	output LED3,
+	output LED4);
+
+    reg [25:0] counter;
+    always @(posedge clk)
+        counter <= counter + 1;
+
+    assign {LED2, LED0} = ~{DTR, RTS};
+    assign {LED3, LED4, LED1} = counter[25:23];
+    assign {DCD, DSR, CTS} = ~{counter[25], counter[24], counter[23]};
+endmodule
+@end verbatim
+@end example
+
+@strong{Note:} The modem pins (but not Tx and Rx) on the FTDI chip are
+active low, so the levels have to be inverted when reading/writing them.
+
+
+@subsection Accessing the modem control lines from the computer
+
+You can examine and toggle the state of the modem control lines from
+the computer using a standard terminal program.  I'll explain the
+process using @code{GtkTerm} as an example.  After starting up the
+application, select @clicksequence{Configuration @click{} Port} from
+the menu (or press @kbd{Ctrl+Shift+S}) to bring up the configuration
+dialog.  Select @code{/dev/ttyUSB1} as a serial port (if you have
+multiple USB serial devices connected to your computer, the number may
+be higher) and press OK.  The other settings don't matter for now.
+
+You should then be able to see the indicators in the status bar flash
+between disabled and normal.  To toggle the state of the lines from
+the computer to the FPGA, you can use @clicksequence{Control signals
+@click{} Toggle DTR} and @clicksequence{Control signals @click{}
+Toggle RTS} (@kbd{F7} and @kbd{F8}).
+
+
+@subsection Writing a program which accesses the modem control lines
+
+You can control the modem control lines from your own program by using
+the @code{ioctl(2)} system call; see @code{tty_ioctl(4)} for a list of
+commands which can be used on a serial port.  To illustrate this,
+here's an example program which prints the state of the
+FPGA@arrow{}computer lines and sets the computer@arrow{}FPGA lines
+whose names have been given as command line arguments to high and the
+other lines to low:
+
+@example
+@verbatim
+#include <err.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
+const char *tty_path = "/dev/ttyUSB1";
+
+int main(int argc, char *argv[])
+{
+	int fd = open(tty_path, O_RDWR | O_NOCTTY);
+	if (fd == -1)
+		err(EXIT_FAILURE, "open: %s", tty_path);
+
+	int bits = 0;
+	if (ioctl(fd, TIOCMGET, &bits) == -1)
+		err(EXIT_FAILURE, "ioctl: TIOCMGET");
+
+	printf("CTS = %d, DCD = %d, DSR = %d\n", (bits & TIOCM_CTS) != 0,
+						 (bits & TIOCM_CD) != 0,
+						 (bits & TIOCM_DSR) != 0);
+
+	bits &= ~TIOCM_DTR;
+	bits &= ~TIOCM_RTS;
+
+	int i;
+	for (i = 1; i < argc; i++) {
+		if (strcasecmp(argv[i], "DTR") == 0)
+			bits |= TIOCM_DTR;
+		else if (strcasecmp(argv[i], "RTS") == 0)
+			bits |= TIOCM_RTS;
+		else
+			errx(EXIT_FAILURE, "%s: invalid argument", argv[i]);
+	}
+
+	if (ioctl(fd, TIOCMSET, &bits) == -1)
+		err(EXIT_FAILURE, "ioctl: TIOCMSET");
+
+	if (close(fd) == -1)
+		err(EXIT_FAILURE, "close");
+
+	return EXIT_SUCCESS;
+}
+@end verbatim
+@end example
+
+You can compile this program using the following command:
+
+@example
+$ gcc -Wall -W -g -o mcl-example mcl-example.c
+@end example
+
+To run it, specify the bits to be set high on the command line:
+
+@example
+$ ./mcl-example
+$ ./mcl-example dtr
+$ ./mcl-example rts
+$ ./mcl-example dtr rts
+@end example
+
+@strong{Note:} There's a serial line control mode flag called
+@code{HUPCL} which is set by default and causes the modem control
+lines to be lowered after the last process closes the port.  If you
+want your changes to have a visible effect, you have to either add
+some more code to your program so it doesn't quit immediately, keep
+another program open on the terminal, or use the following command to
+reset the @code{HUPCL} flag:
+
+@example
+$ stty -hupcl < /dev/ttyUSB1
+@end example
+
+This will take effect until you reboot you computer, after which
+you'll have to re-run the command.  If you want to undo this for some
+reason, you can do so with the following command:
+
+@example
+$ stty hupcl < /dev/ttyUSB1
+@end example
+
+
+@node Communication with the FPGA via UART
+@section Communication with the FPGA via UART
+
+@subsection Sending and receiving bytes from the FPGA
+
+@subsection Connecting to the FPGA from the computer
+
+@subsection Writing a program which uses a serial port
+
+@node Using the FTDI IC in FIFO mode
+@section Using the FTDI IC in FIFO mode
+
+@subsection Configuring the FTDI IC to use FIFO mode
+
+@subsection Sending and receiving data from the FPGA
+
+@subsection Writing a program which accesses the FTDI IC in FIFO mode
+
+@subsection Writing a program which accesses the FTDI IC in MPSSE mode
 
 @c ============================================================================
 
