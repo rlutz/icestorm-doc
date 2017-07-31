@@ -51,6 +51,7 @@ Documentation License''.
 @c * Using the IceStorm Tools on the Bitstream::
 * Programing the FPGA::
 * Communicating with the FPGA::
+* Using multiple configurations::
 * GNU Free Documentation License:: Copying this manual.
 * Index:: Complete index
 @end menu
@@ -909,6 +910,20 @@ $ stty hupcl < /dev/ttyUSB1
 @subsection Writing a program which accesses the FTDI IC in FIFO mode
 
 @subsection Writing a program which accesses the FTDI IC in MPSSE mode
+
+@c ============================================================================
+
+@node Using multiple configurations
+@chapter Using multiple configurations
+
+@menu
+* icemulti Invocation:: Invoking the @code{icemulti} Program
+@end menu
+
+@node icemulti Invocation
+@section Invoking the @code{icemulti} Program
+
+@include usage/icemulti.texi
 
 @c ============================================================================
 
