@@ -153,15 +153,43 @@ another tile.  There are four different kinds of wires:
 @item
   @cindex span wires
   @strong{Span wires} connect tiles across a limited distance, usually
-  in a horizontal or vertical line.  There are five different kinds of
-  span wires:
+  in a horizontal or vertical line.
+
+  A span wire can be connected to the inputs and outputs of all the
+  tiles it passes, except for those of the rightmost or bottom tile if
+  that tile is a logic or RAM tile.  Not accounting for some
+  irregularities, any input on those tiles can be driven by any span
+  wire, but each span wire can only be driven by a specific output of
+  every second tile it passes.
+
+  Span wires can be connected to each other in specific ways:
 
   @itemize @bullet
   @item
-   @strong{Horizontal span-4 wires} connect up to 5 tiles in a row
-    (i.e., an output of one tile can be used as an input in another
-    tile which is up to 4 tiles to its left or right).  Two adjacent
-    tiles are connected by 4 groups of 12 wires each.
+    At their left and right/top and bottom tile, they can be connected
+    to adjacent span wires of the same length, either in a straight
+    line to form a longer span wire or orthogonally to form an L
+    shape.
+  @item
+    On its second tile from the left/top, each (non-peripheral) span-4
+    wire can be driven by a specific span-12 wire of the same
+    orientation.
+  @item
+    I/O tiles allow creating connections between the span-4 wires
+    entering from the fabric: wires 1 and 7 of group 0 can be
+    connected to the corresponding wires of group 2, and those of
+    group 1 to the corresponding wires of group 3.  These are the same
+    wires that can be connected to the peripheral span-4 wires.
+  @end itemize
+
+  There are five different kinds of span wires:
+
+  @itemize @bullet
+  @item
+    @strong{Horizontal span-4 wires} connect up to 5 tiles in a row.
+    @c WRONG -> i.e., an output of one tile can be used as an input in
+    @c another tile which is up to 4 tiles to its left or right
+    Two adjacent tiles are connected by 4 groups of 12 wires each.
 
     The top and bottom I/O banks have special ``peripheral'' span-4
     wires instead of the normal ones (see below).
@@ -177,6 +205,13 @@ another tile.  There are four different kinds of wires:
     column and, with the exception of the bottom tile and possible I/O
     tiles, each tile's left neighbour.  Two adjacent tiles are
     connected by 4 groups of 12 wires each.
+
+    In addition to the tiles to whose inputs and outputs they can
+    normally be connected, vertical span-4 wires can also be connected
+    to the inputs and outputs of these tiles' left neighbour tiles.
+    However, except for the second neighbour tile from the top, only
+    half of the inputs can be driven by any given span wire.  (Output
+    connections are not subject to such a restriction.)
 
     The left and right I/O banks have special ``peripheral'' span-4
     wires instead of the normal ones (see below).
@@ -201,6 +236,11 @@ another tile.  There are four different kinds of wires:
     four groups of span wires passing these corners actually connect
     2, 4, 6, and 8 tiles, respectively.  The order of the signals
     inside the groups is not changed.
+
+    Instead of the normal mechanism for connecting span wires
+    orthogonally, each peripheral span-4 wire can be connected to one
+    specific span-4 wire entering from the logic fabric at each of its
+    endpoints.
 
     @c Naming scheme (1K): TBD
 
